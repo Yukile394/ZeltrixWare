@@ -266,7 +266,7 @@ public class ElytraPlus extends Module {
       if ((!this.isBoxCollidingGround() || !this.stopOnGround.getValue())
          && mc.player.getInventory().getStack(38).getItem() == Items.ELYTRA) {
          if (this.infDurability.getValue() || !mc.player.isFallFlying()) {
-            this.sendPacket(new ClientCommandC2SPacket(mc.player, Mode.START_FALL_FLYING));
+            this.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_FALL_FLYING));
          }
 
          if (mc.player.age % 3 != 0 && this.ncpStrict.is(ElytraPlus.NCPStrict.Motion)) {
@@ -346,7 +346,7 @@ public class ElytraPlus extends Module {
             clickSlot(elytra);
             clickSlot(6);
             clickSlot(elytra);
-            mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, Mode.START_FALL_FLYING));
+            mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_FALL_FLYING));
          }
       }
    }
@@ -421,7 +421,7 @@ public class ElytraPlus extends Module {
    @EventHandler
    public void onPacketSend(PacketEvent.SendPost event) {
       if (!fullNullCheck()) {
-         if (event.getPacket() instanceof ClientCommandC2SPacket command && this.mode.is(ElytraPlus.Mode.FireWork) && command.getMode() == Mode.START_FALL_FLYING) {
+         if (event.getPacket() instanceof ClientCommandC2SPacket command && this.mode.is(ElytraPlus.Mode.FireWork) && command.getMode() == ClientCommandC2SPacket.Mode.START_FALL_FLYING) {
             this.doFireWork(false);
          }
 
@@ -595,7 +595,7 @@ public class ElytraPlus extends Module {
                }
 
                this.startTimer.reset();
-               this.sendPacket(new ClientCommandC2SPacket(mc.player, Mode.START_FALL_FLYING));
+               this.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_FALL_FLYING));
                this.hasTouchedGround = false;
                this.strictTimer.reset();
             }
@@ -830,7 +830,7 @@ public class ElytraPlus extends Module {
                   }
 
                   this.startTimer.reset();
-                  this.sendPacket(new ClientCommandC2SPacket(mc.player, Mode.START_FALL_FLYING));
+                  this.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_FALL_FLYING));
                } else if (!this.startTimer.passedMs((long)(2000.0F * this.redeployInterval.getValue()))) {
                   e.setX(
                      e.getX()
@@ -897,7 +897,7 @@ public class ElytraPlus extends Module {
          mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, 6, 1, SlotActionType.PICKUP, mc.player);
       }
 
-      mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, Mode.START_FALL_FLYING));
+      mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_FALL_FLYING));
       if (elytra != -2) {
          mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, 6, 1, SlotActionType.PICKUP, mc.player);
          mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, elytra, 1, SlotActionType.PICKUP, mc.player);
@@ -1135,7 +1135,7 @@ public class ElytraPlus extends Module {
 
       if (this.canFly()) {
          if (!mc.player.isFallFlying() && !this.started && mc.player.getVelocity().getY() < 0.0) {
-            this.sendPacket(new ClientCommandC2SPacket(mc.player, Mode.START_FALL_FLYING));
+            this.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_FALL_FLYING));
             this.started = true;
          }
 
@@ -1252,7 +1252,7 @@ public class ElytraPlus extends Module {
       if (!this.keepFlying.getValue()) {
          mc.player.setVelocity(0.0, mc.player.getVelocity().getY(), 0.0);
          new Thread(() -> {
-            this.sendPacket(new ClientCommandC2SPacket(mc.player, Mode.START_FALL_FLYING));
+            this.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_FALL_FLYING));
             ThunderHack.TICK_TIMER = 0.1F;
             this.returnItem();
             this.reset();
