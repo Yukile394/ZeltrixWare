@@ -30,6 +30,22 @@ jobs:
         with:
           gradle-version: "8.8"
 
+      - name: Jar kontrol
+        run: |
+          set -euo pipefail
+          f=original/ZeltrixWare.jar
+          test -f "$f" || { echo "HATA: $f yok"; exit 1; }
+          echo "Boyut (bayt): $(stat -c%s "$f")"
+          echo "Tür: $(file "$f")"
+          echo "İlk 120 bayt:"
+          head -c 120 "$f" | cat -v
+          echo
+          if ! unzip -tq "$f" >/dev/null 2>&1; then
+            echo "HATA: $f geçerli bir jar/zip değil. Beklenen boyut ~13123999 bayt."
+            exit 1
+          fi
+          echo "Jar geçerli."
+
       - name: Gradle wrapper üret
         run: |
           set -euo pipefail
@@ -39,9 +55,6 @@ jobs:
           cp -r "$tmp/gradle" ./gradle
           cp "$tmp/gradlew" "$tmp/gradlew.bat" ./
           chmod +x gradlew
-
-      - name: Jar kontrol
-        run: test -f original/ZeltrixWare.jar || { echo "original/ZeltrixWare.jar yok"; exit 1; }
 
       - name: Decompile + remap
         run: |
