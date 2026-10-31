@@ -5,6 +5,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,19 +28,42 @@ jobs:
             echo "ok=true" >> "$GITHUB_OUTPUT"
           else
             echo "ok=false" >> "$GITHUB_OUTPUT"
-            echo "Önce Bootstrap workflow'unu çalıştır."
+            echo "::error::gradlew veya src/main/java yok. Önce Bootstrap workflow'unu çalıştır."
+            exit 1
           fi
 
       - name: Build
-        if: steps.ready.outputs.ok == 'true'
         run: |
           chmod +x gradlew
           ./gradlew build --stacktrace --no-daemon
 
-      - name: Jar yükle
-        if: steps.ready.outputs.ok == 'true'
+      - name: Çıktı jar'ını seç
+        id: pick
+        run: |
+          set -euo pipefail
+          jar="$(ls build/libs/*.jar | grep -v -e '-dev.jar' -e '-sources.jar' | head -n 1)"
+          if [ -z "$jar" ]; then
+            echo "::error::build/libs içinde jar bulunamadı"
+            ls -la build/libs || true
+            exit 1
+          fi
+          echo "jar=$jar" >> "$GITHUB_OUTPUT"
+          echo "Jar: $jar"
+
+      - name: Artifact yükle
         uses: actions/upload-artifact@v4
         with:
           name: ZeltrixWare
-          path: build/libs/*.jar
+          path: ${{ steps.pick.outputs.jar }}
           if-no-files-found: error
+
+      - name: Releases'e yayınla (latest)
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release delete latest --yes --cleanup-tag || true
+          gh release create latest "${{ steps.pick.outputs.jar }}" \
+            --title "ZeltrixWare latest" \
+            --notes "Otomatik build: ${{ github.sha }}"
