@@ -53,7 +53,7 @@ public abstract class MixinEntity implements IEntity {
    )
    public void updateVelocityHook(float speed, Vec3d movementInput, CallbackInfo ci) {
       if (!Module.fullNullCheck()) {
-         if (this == Module.mc.player) {
+         if ((Object)this == Module.mc.player) {
             ci.cancel();
             EventFixVelocity event = new EventFixVelocity(
                movementInput, speed, Module.mc.player.getYaw(), movementInputToVelocityC(movementInput, speed, Module.mc.player.getYaw())
@@ -88,7 +88,7 @@ public abstract class MixinEntity implements IEntity {
       if (ModuleManager.hitBox.isEnabled()
          && Module.mc != null
          && Module.mc.player != null
-         && ((Entity)this).getId() != Module.mc.player.getId()
+         && ((Entity)(Object)this).getId() != Module.mc.player.getId()
          && (ModuleManager.aura.isDisabled() || HitBox.affectToAura.getValue())) {
          cir.setReturnValue(
             new Box(

@@ -205,7 +205,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
                   .render(pex, f, g, matrixStack, vertexConsumerProvider, i, ModuleManager.customModel.mode.getValue(), bipedModel);
 
                for (FeatureRenderer<T, M> featureRenderer : this.features) {
-                  featureRenderer.render(matrixStack, vertexConsumerProvider, i, pex, limbPos, limbSpeed, g, lxx, kx, mx);
+                  featureRenderer.render(matrixStack, vertexConsumerProvider, i, (T)(Object)pex, limbPos, limbSpeed, g, lxx, kx, mx);
                }
 
                matrixStack.pop();

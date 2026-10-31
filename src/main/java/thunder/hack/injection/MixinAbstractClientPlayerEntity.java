@@ -21,7 +21,7 @@ public class MixinAbstractClientPlayerEntity {
       cancellable = true
    )
    public void onGetSkinTextures(CallbackInfoReturnable<SkinTextures> cir) {
-      if (this == MinecraftClient.getInstance().player && ModuleManager.customModel != null && ModuleManager.customModel.isEnabled()) {
+      if ((Object)this == MinecraftClient.getInstance().player && ModuleManager.customModel != null && ModuleManager.customModel.isEnabled()) {
          Identifier texture = switch ((CustomModel.Mode)ModuleManager.customModel.mode.getValue()) {
             case Tavsan -> Identifier.of("thunderhack", "textures/rabbit.png");
             case Boykisser -> TextureStorage.boykisser;

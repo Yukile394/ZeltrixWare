@@ -108,7 +108,7 @@ public class MixinEntityLiving implements IEntityLiving {
    )
    public void travelHook(Vec3d movementInput, CallbackInfo ci) {
       if (!Module.fullNullCheck()) {
-         if ((LivingEntity)this == Module.mc.player) {
+         if ((Object)this == Module.mc.player) {
             EventTravel event = new EventTravel(Module.mc.player.getVelocity(), true);
             ThunderHack.EVENT_BUS.post(event);
             if (event.isCancelled()) {
@@ -126,7 +126,7 @@ public class MixinEntityLiving implements IEntityLiving {
    )
    public void travelPostHook(Vec3d movementInput, CallbackInfo ci) {
       if (!Module.fullNullCheck()) {
-         if ((LivingEntity)this == Module.mc.player) {
+         if ((Object)this == Module.mc.player) {
             EventTravel event = new EventTravel(movementInput, false);
             ThunderHack.EVENT_BUS.post(event);
             if (event.isCancelled()) {

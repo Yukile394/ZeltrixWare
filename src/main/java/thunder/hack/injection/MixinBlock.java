@@ -31,7 +31,7 @@ public abstract class MixinBlock {
    )
    public void getVelocityMultiplierHook(CallbackInfoReturnable<Float> cir) {
       if (NoWeb.isNoWebEnabled()) {
-         if ((Block)this instanceof CobwebBlock) {
+         if ((Object)this instanceof CobwebBlock) {
             NoWeb.Mode mode = NoWeb.getNoWebMode();
             if (mode == NoWeb.Mode.Cancel || mode == NoWeb.Mode.Spoof || mode == NoWeb.Mode.Zeltrix) {
                cir.setReturnValue(1.0F);
