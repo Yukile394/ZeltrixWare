@@ -63,7 +63,7 @@ public class ElytraSwap extends Module {
    @EventHandler
    public void onPacketSend(PacketEvent.SendPost e) {
       if (e.getPacket() instanceof ClientCommandC2SPacket command
-         && command.getMode() == Mode.START_FALL_FLYING
+         && command.getMode() == ClientCommandC2SPacket.Mode.START_FALL_FLYING
          && this.mode.getValue() == ElytraSwap.Mode.Bind
          && this.startFireWork.getValue()) {
          this.useFireWork();
@@ -210,7 +210,7 @@ public class ElytraSwap extends Module {
                clickSlot(result.slot());
                this.sendPacket(new CloseHandledScreenC2SPacket(mc.player.currentScreenHandler.syncId));
                if (this.startFireWork.getValue() && mc.player.fallDistance > 0.0F) {
-                  this.sendPacket(new ClientCommandC2SPacket(mc.player, Mode.START_FALL_FLYING));
+                  this.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_FALL_FLYING));
                }
 
                swapping = false;
@@ -221,7 +221,7 @@ public class ElytraSwap extends Module {
             clickSlot(result.slot());
             this.sendPacket(new CloseHandledScreenC2SPacket(mc.player.currentScreenHandler.syncId));
             if (this.startFireWork.getValue() && mc.player.fallDistance > 0.0F) {
-               this.sendPacket(new ClientCommandC2SPacket(mc.player, Mode.START_FALL_FLYING));
+               this.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_FALL_FLYING));
             }
          }
       }
