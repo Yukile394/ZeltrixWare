@@ -1,0 +1,75 @@
+package thunder.hack;
+
+import com.mojang.logging.LogUtils;
+import java.awt.Color;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
+import meteordevelopment.orbit.EventBus;
+import meteordevelopment.orbit.IEventBus;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.metadata.ModMetadata;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.MinecraftClient;
+import org.slf4j.Logger;
+import thunder.hack.core.Core;
+import thunder.hack.core.Managers;
+import thunder.hack.core.hooks.ManagerShutdownHook;
+import thunder.hack.core.manager.client.ModuleManager;
+import thunder.hack.utility.ThunderUtility;
+import thunder.hack.utility.render.Render2DEngine;
+
+public class ThunderHack implements ModInitializer {
+   public static final ModMetadata MOD_META = ((ModContainer)FabricLoader.getInstance().getModContainer("thunderhack").orElseThrow()).getMetadata();
+   public static final String MOD_ID = "thunderhack";
+   public static final String VERSION = "1.7b2407";
+   public static String GITHUB_HASH = "0";
+   public static String BUILD_DATE = "1 Jan 1970";
+   public static final Logger LOGGER = LogUtils.getLogger();
+   public static final Runtime RUNTIME = Runtime.getRuntime();
+   public static final boolean baritone = FabricLoader.getInstance().isModLoaded("baritone") || FabricLoader.getInstance().isModLoaded("baritone-meteor");
+   public static final IEventBus EVENT_BUS = new EventBus();
+   public static String[] contributors = new String[32];
+   public static Color copy_color = new Color(-1);
+   public static ThunderHack.KeyListening currentKeyListener;
+   public static boolean isOutdated = false;
+   public static BlockPos gps_position;
+   public static float TICK_TIMER = 1.0F;
+   public static MinecraftClient mc;
+   public static long initTime;
+   public static Core core = new Core();
+
+   public void onInitialize() {
+      mc = MinecraftClient.getInstance();
+      initTime = System.currentTimeMillis();
+      BUILD_DATE = ThunderUtility.readManifestField("Build-Timestamp");
+      GITHUB_HASH = ThunderUtility.readManifestField("Git-Commit");
+      ThunderUtility.syncVersion();
+      EVENT_BUS.registerLambdaFactory("thunder.hack", (lookupInMethod, klass) -> (Lookup)lookupInMethod.invoke(null, klass, MethodHandles.lookup()));
+      EVENT_BUS.subscribe(core);
+      Managers.init();
+      Managers.subscribe();
+      Render2DEngine.initShaders();
+      ModuleManager.rpc.startRpc();
+      LOGGER.info("[ThunderHack] Init time: {} ms.", System.currentTimeMillis() - initTime);
+      initTime = System.currentTimeMillis();
+      RUNTIME.addShutdownHook(new ManagerShutdownHook());
+   }
+
+   public static boolean isFuturePresent() {
+      return FabricLoader.getInstance().getModContainer("future").isPresent();
+   }
+
+   public static enum KeyListening {
+      ThunderGui,
+      ClickGui,
+      Search,
+      Sliders,
+      Strings;
+
+      private static ThunderHack.KeyListening[] $values() {
+         return new ThunderHack.KeyListening[]{ThunderGui, ClickGui, Search, Sliders, Strings};
+      }
+   }
+}
