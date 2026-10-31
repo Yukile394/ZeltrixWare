@@ -51,6 +51,91 @@ IMPORT_LINE = re.compile(
 FAIL_MARKERS = ("Couldn't be decompiled", "$VF: Unable to", "Method decompilation error")
 
 
+INDY_CONCAT = re.compile(
+    r'StringConcatFactory\.makeConcatWithConstants<((?:"(?:[^"\\]|\\.)*"\s*,?\s*)+)>\('
+)
+STR_LITERAL = re.compile(r'"((?:[^"\\]|\\.)*)"')
+RECIPE_MARKERS = re.compile(r"(\\u0001|\\u0002|\x01|\x02)")
+
+
+def _split_call_args(text: str, start: int):
+    """start: '(' sonrası indeks. (argümanlar, kapanış ')' indeksi) döner, bulamazsa None."""
+    depth = 0
+    i = start
+    cur = start
+    args = []
+    n = len(text)
+    while i < n:
+        c = text[i]
+        if c in "\"'":
+            quote = c
+            i += 1
+            while i < n and text[i] != quote:
+                if text[i] == "\\":
+                    i += 1
+                i += 1
+        elif c in "([{":
+            depth += 1
+        elif c in ")]}":
+            if depth == 0:
+                args.append(text[cur:i].strip())
+                return args, i
+            depth -= 1
+        elif c == "," and depth == 0:
+            args.append(text[cur:i].strip())
+            cur = i + 1
+        i += 1
+    return None
+
+
+def fix_indy_concat(text: str) -> str:
+    """Vineflower'ın çıkaramadığı invokedynamic string birleştirmeyi düz Java'ya çevirir."""
+    out = []
+    pos = 0
+    while True:
+        m = INDY_CONCAT.search(text, pos)
+        if not m:
+            out.append(text[pos:])
+            break
+        parsed = _split_call_args(text, m.end())
+        literals = STR_LITERAL.findall(m.group(1))
+        if parsed is None or len(literals) < 2:
+            out.append(text[pos:m.end()])
+            pos = m.end()
+            continue
+        args, close = parsed
+        if args == [""]:
+            args = []
+        recipe = literals[1]
+        constants = literals[2:]
+        pieces = []
+        a_i = c_i = 0
+        ok = True
+        for frag in RECIPE_MARKERS.split(recipe):
+            if frag in ("\\u0001", "\x01"):
+                if a_i >= len(args):
+                    ok = False
+                    break
+                pieces.append("(" + args[a_i] + ")")
+                a_i += 1
+            elif frag in ("\\u0002", "\x02"):
+                if c_i >= len(constants):
+                    ok = False
+                    break
+                pieces.append('"' + constants[c_i] + '"')
+                c_i += 1
+            elif frag:
+                pieces.append('"' + frag + '"')
+        if not ok or a_i != len(args):
+            out.append(text[pos:m.end()])
+            pos = m.end()
+            continue
+        out.append(text[pos:m.start()])
+        out.append('("" + ' + " + ".join(pieces) + ")" if pieces else '""')
+        pos = close + 1
+    return "".join(out)
+
+
 def download(url: str, dest: Path) -> None:
     LOG.info("indiriliyor: %s", url)
     req = urllib.request.Request(url, headers={"User-Agent": "zeltrixware-bootstrap"})
@@ -303,7 +388,7 @@ def main() -> int:
                 failed.append(str(rel))
             dest = java_dir / rel
             dest.parent.mkdir(parents=True, exist_ok=True)
-            dest.write_text(renamer.apply(text), encoding="utf-8")
+            dest.write_text(renamer.apply(fix_indy_concat(text)), encoding="utf-8")
             total += 1
 
     report = [
