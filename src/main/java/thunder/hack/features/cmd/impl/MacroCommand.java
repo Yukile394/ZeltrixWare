@@ -129,7 +129,7 @@ public class MacroCommand extends Command {
          }
       }
 
-      return key == -1 ? "None" : StringConcatFactory.makeConcatWithConstants<"makeConcatWithConstants","\u0001">(kn).toUpperCase();
+      return key == -1 ? "None" : ("" + (kn)).toUpperCase();
    }
 
    String usage() {

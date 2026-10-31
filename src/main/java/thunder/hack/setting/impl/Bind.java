@@ -40,7 +40,7 @@ public class Bind {
             }
          }
 
-         return this.key == -1 ? "None" : StringConcatFactory.makeConcatWithConstants<"makeConcatWithConstants","\u0001">(kn).toUpperCase();
+         return this.key == -1 ? "None" : ("" + (kn)).toUpperCase();
       }
    }
 

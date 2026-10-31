@@ -127,7 +127,7 @@ public class LegacyHud extends Module {
                }
 
                String s = potion.getName().getString() + " " + power;
-               String s2 = StringConcatFactory.makeConcatWithConstants<"makeConcatWithConstants","\u0001">(PotionHud.getDuration(potionEffect));
+               String s2 = ("" + (PotionHud.getDuration(potionEffect)));
                Color c = new Color(((StatusEffect)potionEffect.getEffectType().value()).getColor());
                if (this.renderingUp.getValue()) {
                   i += offset;
