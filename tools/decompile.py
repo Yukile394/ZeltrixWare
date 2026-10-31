@@ -89,19 +89,28 @@ class Renamer:
     def __init__(self, tiny_text: str) -> None:
         lines = tiny_text.splitlines()
         hdr = lines[0].split("\t")
-        if hdr[:2] != ["tiny", "2"] or hdr[3:5] != ["intermediary", "named"]:
+        if hdr[:2] != ["tiny", "2"]:
             raise SystemExit(f"HATA: beklenmeyen mapping başlığı: {hdr}")
+        namespaces = hdr[3:]
+        if "intermediary" not in namespaces or "named" not in namespaces:
+            raise SystemExit(f"HATA: intermediary/named yok: {hdr}")
+        i_idx = namespaces.index("intermediary")
+        n_idx = namespaces.index("named")
         self.classes = {}
         self.members = {}
         for line in lines[1:]:
             if line.startswith("c\t"):
                 p = line.split("\t")
-                if len(p) >= 3 and p[2]:
-                    self.classes[p[1]] = p[2]
+                if len(p) > 1 + max(i_idx, n_idx):
+                    inter, named = p[1 + i_idx], p[1 + n_idx]
+                    if inter and named:
+                        self.classes[inter] = named
             elif line.startswith("\t") and not line.startswith("\t\t"):
                 p = line[1:].split("\t")
-                if p[0] in ("m", "f") and len(p) >= 4 and p[3] and p[2] != p[3]:
-                    self.members[p[2]] = p[3]
+                if p[0] in ("m", "f") and len(p) > 2 + max(i_idx, n_idx):
+                    inter, named = p[2 + i_idx], p[2 + n_idx]
+                    if inter and named and inter != named:
+                        self.members[inter] = named
         self.simple = {}
         self.fqn = {}
         for inter, named in self.classes.items():
