@@ -275,7 +275,7 @@ public final class InteractionUtility {
    @Nullable
    public static BlockHitResult getPlaceResult(@NotNull BlockPos bp, InteractionUtility.Interact interact, boolean ignoreEntities) {
       if (!ignoreEntities) {
-         for (Entity entity : new ArrayList(Module.mc.world.getNonSpectatingEntities(Entity.class, new Box(bp)))) {
+         for (Entity entity : new ArrayList<>(Module.mc.world.getNonSpectatingEntities(Entity.class, new Box(bp)))) {
             if (!(entity instanceof ItemEntity) && !(entity instanceof ExperienceOrbEntity)) {
                return null;
             }
