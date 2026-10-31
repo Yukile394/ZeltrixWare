@@ -18,7 +18,7 @@ public class MixinFireworkRocketEntity {
    private void onTickHead(CallbackInfo ci) {
       MinecraftClient mc = MinecraftClient.getInstance();
       if (mc.player != null) {
-         FireworkRocketEntity self = (FireworkRocketEntity)this;
+         FireworkRocketEntity self = (FireworkRocketEntity)(Object)this;
          if (self.getOwner() instanceof ClientPlayerEntity player && player == mc.player) {
             ElytraBooster.getInstance().captureVelocity(player);
             return;
@@ -33,7 +33,7 @@ public class MixinFireworkRocketEntity {
    private void onTickTail(CallbackInfo ci) {
       MinecraftClient mc = MinecraftClient.getInstance();
       if (mc.player != null) {
-         FireworkRocketEntity self = (FireworkRocketEntity)this;
+         FireworkRocketEntity self = (FireworkRocketEntity)(Object)this;
          if (self.getOwner() instanceof ClientPlayerEntity player && player == mc.player) {
             ElytraBooster.getInstance().amplifyBoost(player);
             return;
