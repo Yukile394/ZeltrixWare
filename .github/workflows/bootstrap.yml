@@ -34,6 +34,7 @@ jobs:
         run: |
           set -euo pipefail
           tmp="$(mktemp -d)"
+          echo "rootProject.name = 'wrapper-tmp'" > "$tmp/settings.gradle"
           (cd "$tmp" && gradle wrapper --gradle-version 8.8 --distribution-type bin)
           cp -r "$tmp/gradle" ./gradle
           cp "$tmp/gradlew" "$tmp/gradlew.bat" ./
