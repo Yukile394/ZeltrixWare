@@ -29,7 +29,7 @@ public class BooleanComponent extends SettingElement {
                (double)(this.getY() + 5.0F),
                this.isHovered() ? -1 : new Color(-1325400065, true).getRGB()
             );
-         this.animation = AnimationUtility.fast(this.animation, this.setting.getValue() ? 1.0F : 0.0F, 15.0F);
+         this.animation = AnimationUtility.fast(this.animation, (Boolean)this.setting.getValue() ? 1.0F : 0.0F, 15.0F);
          double paddingX = (double)(7.0F * this.animation);
          Color color = HudEditor.getColor(1);
          Render2DEngine.drawRound(

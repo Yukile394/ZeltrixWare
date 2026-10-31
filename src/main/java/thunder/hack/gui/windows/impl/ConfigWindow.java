@@ -113,10 +113,10 @@ public class ConfigWindow extends WindowBase {
       Render2DEngine.addWindow(
          context.getMatrices(), this.getX(), this.getY() + 38.0F, this.getX() + this.getWidth(), this.getY() + this.getHeight() - 1.0F, 1.0
       );
-      hover2 = (boolean)0;
+      int plateIndex = 0;
 
       for (ConfigWindow.ConfigPlate configPlate : this.configPlates) {
-         hover2++;
+         plateIndex++;
          if (!((float)((int)(configPlate.offset + this.getY() + 50.0F)) + this.getScrollOffset() > this.getY() + this.getHeight())
             && !(configPlate.offset + this.getScrollOffset() + this.getY() < this.getY())) {
             Render2DEngine.drawRectWithOutline(
@@ -189,7 +189,7 @@ public class ConfigWindow extends WindowBase {
             FontRenderers.sf_medium_mini
                .drawString(
                   context.getMatrices(),
-                  hover2 + ".",
+                  plateIndex + ".",
                   (double)(this.getX() + 3.0F),
                   (double)(configPlate.offset + this.getY() + 41.0F + this.getScrollOffset()),
                   textColor

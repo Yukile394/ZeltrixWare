@@ -60,63 +60,7 @@ public class Setting<T> {
    }
 
    public static Enum get(Enum clazz) {
-      // $VF: Couldn't be decompiled
-      // Please report this to the Vineflower issue tracker, at https://github.com/Vineflower/vineflower/issues with a copy of the class file (if you have the rights to distribute it!)
-      // java.lang.NullPointerException: Cannot invoke "org.jetbrains.java.decompiler.struct.gen.VarType.isGeneric()" because "newRet" is null
-      //   at org.jetbrains.java.decompiler.modules.decompiler.exps.InvocationExprent.getInferredExprType(InvocationExprent.java:634)
-      //   at org.jetbrains.java.decompiler.modules.decompiler.exps.InvocationExprent.appendParamList(InvocationExprent.java:1063)
-      //   at org.jetbrains.java.decompiler.modules.decompiler.exps.InvocationExprent.toJava(InvocationExprent.java:902)
-      //   at org.jetbrains.java.decompiler.modules.decompiler.exps.FunctionExprent.wrapOperandString(FunctionExprent.java:745)
-      //   at org.jetbrains.java.decompiler.modules.decompiler.exps.FunctionExprent.wrapOperandString(FunctionExprent.java:714)
-      //   at org.jetbrains.java.decompiler.modules.decompiler.exps.FunctionExprent.toJava(FunctionExprent.java:610)
-      //   at org.jetbrains.java.decompiler.modules.decompiler.exps.FunctionExprent.wrapOperandString(FunctionExprent.java:745)
-      //   at org.jetbrains.java.decompiler.modules.decompiler.exps.FunctionExprent.wrapOperandString(FunctionExprent.java:714)
-      //   at org.jetbrains.java.decompiler.modules.decompiler.exps.FunctionExprent.toJava(FunctionExprent.java:614)
-      //   at org.jetbrains.java.decompiler.modules.decompiler.exps.FunctionExprent.wrapOperandString(FunctionExprent.java:745)
-      //   at org.jetbrains.java.decompiler.modules.decompiler.exps.FunctionExprent.toJava(FunctionExprent.java:589)
-      //   at org.jetbrains.java.decompiler.modules.decompiler.stats.DoStatement.toJava(DoStatement.java:136)
-      //   at org.jetbrains.java.decompiler.modules.decompiler.ExprProcessor.jmpWrapper(ExprProcessor.java:833)
-      //   at org.jetbrains.java.decompiler.modules.decompiler.stats.SequenceStatement.toJava(SequenceStatement.java:107)
-      //   at org.jetbrains.java.decompiler.modules.decompiler.stats.RootStatement.toJava(RootStatement.java:36)
-      //   at org.jetbrains.java.decompiler.main.ClassWriter.writeMethod(ClassWriter.java:1283)
-      //
-      // Bytecode:
-      // 00: aload 0
-      // 01: invokestatic thunder/hack/setting/impl/EnumConverter.currentEnum (Ljava/lang/Enum;)I
-      // 04: istore 1
-      // 05: bipush 0
-      // 06: istore 2
-      // 07: iload 2
-      // 08: aload 0
-      // 09: invokevirtual java/lang/Object.getClass ()Ljava/lang/Class;
-      // 0c: invokevirtual java/lang/Class.getEnumConstants ()[Ljava/lang/Object;
-      // 0f: checkcast [Ljava/lang/Enum;
-      // 12: arraylength
-      // 13: if_icmpge 35
-      // 16: aload 0
-      // 17: invokevirtual java/lang/Object.getClass ()Ljava/lang/Class;
-      // 1a: invokevirtual java/lang/Class.getEnumConstants ()[Ljava/lang/Object;
-      // 1d: checkcast [Ljava/lang/Enum;
-      // 20: iload 2
-      // 21: aaload
-      // 22: astore 3
-      // 23: iload 2
-      // 24: iload 1
-      // 25: bipush 1
-      // 26: iadd
-      // 27: if_icmpeq 2d
-      // 2a: goto 2f
-      // 2d: aload 3
-      // 2e: areturn
-      // 2f: iinc 2 1
-      // 32: goto 07
-      // 35: aload 0
-      // 36: invokevirtual java/lang/Object.getClass ()Ljava/lang/Class;
-      // 39: invokevirtual java/lang/Class.getEnumConstants ()[Ljava/lang/Object;
-      // 3c: checkcast [Ljava/lang/Enum;
-      // 3f: bipush 0
-      // 40: aaload
-      // 41: areturn
+      return EnumConverter.increaseEnum(clazz);
    }
 
    public String getName() {

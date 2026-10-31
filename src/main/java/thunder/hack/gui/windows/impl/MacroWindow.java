@@ -146,10 +146,10 @@ public class MacroWindow extends WindowBase {
       Render2DEngine.addWindow(
          context.getMatrices(), this.getX(), this.getY() + 50.0F, this.getX() + this.getWidth(), this.getY() + this.getHeight() - 1.0F, 1.0
       );
-      hover2 = (boolean)0;
+      int plateIndex = 0;
 
       for (MacroWindow.MacroPlate macroPlate : this.macroPlates) {
-         hover2++;
+         plateIndex++;
          if (!((float)((int)(macroPlate.offset + this.getY() + 25.0F)) + this.getScrollOffset() > this.getY() + this.getHeight())
             && !(macroPlate.offset + this.getScrollOffset() + this.getY() + 10.0F < this.getY())) {
             hover5 = Render2DEngine.isHovered(
@@ -256,7 +256,7 @@ public class MacroWindow extends WindowBase {
             FontRenderers.sf_medium_mini
                .drawString(
                   context.getMatrices(),
-                  hover2 + ".",
+                  plateIndex + ".",
                   (double)(this.getX() + 3.0F),
                   (double)(macroPlate.offset + this.getY() + 41.0F + this.getScrollOffset()),
                   textColor

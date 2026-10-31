@@ -179,10 +179,10 @@ public class WaypointWindow extends WindowBase {
       Render2DEngine.addWindow(
          context.getMatrices(), this.getX(), this.getY() + 50.0F, this.getX() + this.getWidth(), this.getY() + this.getHeight() - 1.0F, 1.0
       );
-      hover2 = (boolean)0;
+      int plateIndex = 0;
 
       for (WaypointWindow.WaypointPlate waypointPlate : this.waypointPlates) {
-         hover2++;
+         plateIndex++;
          if (!((float)((int)(waypointPlate.offset + this.getY() + 25.0F)) + this.getScrollOffset() > this.getY() + this.getHeight())
             && !(waypointPlate.offset + this.getScrollOffset() + this.getY() + 10.0F < this.getY())) {
             hover5 = Render2DEngine.isHovered(
@@ -365,7 +365,7 @@ public class WaypointWindow extends WindowBase {
             FontRenderers.sf_medium_mini
                .drawString(
                   context.getMatrices(),
-                  hover2 + ".",
+                  plateIndex + ".",
                   (double)(this.getX() + 3.0F),
                   (double)(this.getY() + 41.0F + this.getScrollOffset() + waypointPlate.offset),
                   textColor
@@ -561,7 +561,7 @@ public class WaypointWindow extends WindowBase {
                            case Name:
                               plate.waypoint.setName(SliderElement.removeLastChar(plate.waypoint.getName()));
                               return;
-                           case X:
+                           case X: {
                               String num = SliderElement.removeLastChar(String.valueOf(plate.waypoint.getX()));
                               if (num.isEmpty()) {
                                  num = "0";
@@ -569,7 +569,8 @@ public class WaypointWindow extends WindowBase {
 
                               plate.waypoint.setX(Integer.parseInt(num));
                               return;
-                           case Y:
+                           }
+                           case Y: {
                               String num = SliderElement.removeLastChar(String.valueOf(plate.waypoint.getY()));
                               if (num.isEmpty()) {
                                  num = "0";
@@ -577,7 +578,8 @@ public class WaypointWindow extends WindowBase {
 
                               plate.waypoint.setY(Integer.parseInt(num));
                               return;
-                           case Z:
+                           }
+                           case Z: {
                               String num = SliderElement.removeLastChar(String.valueOf(plate.waypoint.getZ()));
                               if (num.isEmpty()) {
                                  num = "0";
@@ -585,6 +587,7 @@ public class WaypointWindow extends WindowBase {
 
                               plate.waypoint.setZ(Integer.parseInt(num));
                               return;
+                           }
                            case Server:
                               plate.waypoint.setServer(SliderElement.removeLastChar(plate.waypoint.getServer()));
                               return;

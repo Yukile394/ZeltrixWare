@@ -356,13 +356,13 @@ public class Aura extends Module {
    private void disableSprint() {
       mc.player.setSprinting(false);
       mc.options.sprintKey.setPressed(false);
-      this.sendPacket(new ClientCommandC2SPacket(mc.player, Mode.STOP_SPRINTING));
+      this.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SPRINTING));
    }
 
    private void enableSprint() {
       mc.player.setSprinting(true);
       mc.options.sprintKey.setPressed(true);
-      this.sendPacket(new ClientCommandC2SPacket(mc.player, Mode.START_SPRINTING));
+      this.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_SPRINTING));
    }
 
    public void resolvePlayers() {

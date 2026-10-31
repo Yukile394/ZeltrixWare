@@ -131,7 +131,7 @@ class GlyphMap {
          int ow = bi.getWidth();
          int oh = bi.getHeight();
          NativeImage image = new NativeImage(Format.RGBA, ow, oh, false);
-         long ptr = ((INativeImage)image).getPointer();
+         long ptr = ((thunder.hack.injection.accesors.INativeImage)(Object)image).getPointer();
          IntBuffer backingBuffer = MemoryUtil.memIntBuffer(ptr, image.getWidth() * image.getHeight());
          int off = 0;
          WritableRaster _ra = bi.getRaster();

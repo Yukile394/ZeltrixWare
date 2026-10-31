@@ -33,8 +33,8 @@ public class BooleanElement extends AbstractElement {
          1.0F,
          7.0F * this.animation > 4.0F ? HudEditor.getColor(0) : new Color(687865855, true)
       );
-      this.animation = AnimationUtility.fast(this.animation, this.setting.getValue() ? 1.0F : 0.0F, 20.0F);
-      this.animation2 = AnimationUtility.fast(this.animation2, this.setting.getValue() ? 1.0F : 0.0F, 8.0F);
+      this.animation = AnimationUtility.fast(this.animation, (Boolean)this.setting.getValue() ? 1.0F : 0.0F, 20.0F);
+      this.animation2 = AnimationUtility.fast(this.animation2, (Boolean)this.setting.getValue() ? 1.0F : 0.0F, 8.0F);
       Render2DEngine.drawRound(
          context.getMatrices(), this.x + this.width - 20.0F + 7.0F * this.animation, this.y + this.height / 2.0F - 3.0F, 6.0F, 6.0F, 1.0F, new Color(-1)
       );
