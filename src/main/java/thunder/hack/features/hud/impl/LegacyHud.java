@@ -106,7 +106,7 @@ public class LegacyHud extends Module {
 
          int i = mc.currentScreen instanceof ChatScreen && this.renderingUp.getValue() ? 13 : (this.renderingUp.getValue() ? -2 : 0);
          if (this.potions.getValue()) {
-            for (StatusEffectInstance potionEffect : new ArrayList(mc.player.getStatusEffects())) {
+            for (StatusEffectInstance potionEffect : new ArrayList<>(mc.player.getStatusEffects())) {
                StatusEffect potion = (StatusEffect)potionEffect.getEffectType().value();
                String power = "";
                switch (potionEffect.getAmplifier()) {
