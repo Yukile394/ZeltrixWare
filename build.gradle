@@ -1,0 +1,61 @@
+plugins {
+    id 'fabric-loom' version '1.7.4'
+}
+
+base {
+    archivesName = project.archives_base_name
+}
+
+version = project.mod_version
+group = project.maven_group
+
+repositories {
+    mavenCentral()
+}
+
+def bundledLibs = file("libs/zeltrixware-bundled-libs.jar")
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    // kotlin, jnr, dbus, netty-socks, orbit, mediaplayerinfo (orijinal jar'daki gömülü kütüphaneler)
+    implementation files(bundledLibs)
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/thunderhack.accesswidener")
+    mixin {
+        defaultRefmapName = "zeltrixwarev5-refmap.json"
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+    options.release = 21
+    options.warnings = false
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from("LICENSE") {
+        rename { "LICENSE_${project.archives_base_name}" }
+    }
+
+    from({ zipTree(bundledLibs) }) {
+        exclude "META-INF/MANIFEST.MF", "META-INF/INDEX.LIST", "META-INF/*.SF", "META-INF/*.RSA", "META-INF/*.DSA"
+    }
+
+    manifest {
+        attributes "Implementation-Version": project.version
+    }
+}

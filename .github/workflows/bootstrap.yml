@@ -1,0 +1,63 @@
+name: Bootstrap (wrapper + decompile)
+
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "src/main/java doluysa üzerine yaz"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.8"
+
+      - name: Gradle wrapper üret
+        run: |
+          set -euo pipefail
+          tmp="$(mktemp -d)"
+          (cd "$tmp" && gradle wrapper --gradle-version 8.8 --distribution-type bin)
+          cp -r "$tmp/gradle" ./gradle
+          cp "$tmp/gradlew" "$tmp/gradlew.bat" ./
+          chmod +x gradlew
+
+      - name: Jar kontrol
+        run: test -f original/ZeltrixWare.jar || { echo "original/ZeltrixWare.jar yok"; exit 1; }
+
+      - name: Decompile + remap
+        run: |
+          set -euo pipefail
+          args=(--jar original/ZeltrixWare.jar --root . --yarn "1.21+build.9")
+          if [ "${{ inputs.force }}" = "true" ]; then args+=(--force); fi
+          python3 tools/decompile.py "${args[@]}"
+
+      - name: Commit
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "değişiklik yok"
+          else
+            git commit -m "bootstrap: gradle wrapper + decompiled sources"
+            git push
+          fi
