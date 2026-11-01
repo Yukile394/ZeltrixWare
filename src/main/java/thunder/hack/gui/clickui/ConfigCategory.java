@@ -37,15 +37,27 @@ public class ConfigCategory extends AbstractCategory {
       float contentHeight = this.configs == null ? 0.0F : (float)this.configs.size() * 14.0F + 8.0F;
       float height1 = ModuleManager.clickGui.scrollMode.getValue() != ClickGui.scrollModeEn.Old && !(contentHeight < maxH) ? maxH : contentHeight;
       this.catHeight = AnimationUtility.fast(this.catHeight, height1, 30.0F);
+      if (this.isOpen()) {
+         Render2DEngine.drawRound(
+            context.getMatrices(),
+            this.getX(),
+            this.getY(),
+            this.width,
+            this.height + this.catHeight,
+            3.0F,
+            ModuleManager.clickGui.categoryColor.getValue().getColorObject()
+         );
+      }
+
       boolean popStack = false;
       if (this.isOpen()) {
          if (ModuleManager.clickGui.scrollMode.getValue() != ClickGui.scrollModeEn.Old && !(contentHeight < maxH)) {
             Render2DEngine.addWindow(
                context.getMatrices(),
-               this.getX() + 3.0F,
-               this.getY() + this.height - 6.0F,
-               this.getX() + 3.0F + this.width - 6.0F,
-               this.getY() + this.height - 6.0F + maxH,
+               this.getX(),
+               this.getY() + this.height,
+               this.getX() + this.width,
+               this.getY() + this.height + maxH,
                1.0
             );
             popStack = true;
@@ -66,17 +78,9 @@ public class ConfigCategory extends AbstractCategory {
          if (this.configs != null) {
             for (String cfg : this.configs) {
                boolean hovered = Render2DEngine.isHovered(
-                  (double)mouseX, (double)mouseY, (double)(this.getX() + 2.0F), (double)offsetY, (double)(this.width - 4.0F), 14.0
+                  (double)mouseX, (double)mouseY, (double)this.getX(), (double)offsetY, (double)this.width, 14.0
                );
-               Render2DEngine.drawRound(
-                  context.getMatrices(),
-                  this.getX() + 2.0F,
-                  offsetY,
-                  this.width - 4.0F,
-                  14.0F,
-                  2.0F,
-                  hovered ? new Color(0, 0, 0, 100) : new Color(0, 0, 0, 50)
-               );
+               Render2DEngine.drawRect(context.getMatrices(), this.getX(), offsetY, this.width, 14.0F, hovered ? new Color(34, 34, 42, 255) : new Color(20, 20, 26, 255));
                FontRenderers.sf_medium.drawString(context.getMatrices(), cfg, (double)(this.getX() + 6.0F), (double)(offsetY + 4.0F), -1);
                offsetY += 14.0F;
             }
@@ -87,22 +91,21 @@ public class ConfigCategory extends AbstractCategory {
          Render2DEngine.popWindow();
       }
 
-      Render2DEngine.drawRound(context.getMatrices(), this.getX(), this.getY(), this.width, 20.0F, 4.0F, HudEditor.getColor(270));
-      if (this.isOpen()) {
-         Render2DEngine.drawRound(
-            context.getMatrices(),
-            this.getX(),
-            this.getY() + 20.0F,
-            this.width,
-            this.catHeight,
-            4.0F,
-            ModuleManager.clickGui.categoryColor.getValue().getColorObject()
-         );
-      }
-
+      Render2DEngine.drawRound(context.getMatrices(), this.getX(), this.getY(), this.width, this.height, 3.0F, new Color(22, 22, 28, 255));
+      Render2DEngine.draw2DGradientRect(
+         context.getMatrices(),
+         this.getX(),
+         this.getY() + this.height - 1.5F,
+         this.getX() + this.width,
+         this.getY() + this.height,
+         HudEditor.getColor(270),
+         HudEditor.getColor(0),
+         HudEditor.getColor(270),
+         HudEditor.getColor(0)
+      );
       FontRenderers.sf_bold
          .drawString(
-            context.getMatrices(), this.getName(), (double)(this.getX() + 20.0F), (double)(this.getY() + 6.5F), HudEditor.textColor.getValue().getColor()
+            context.getMatrices(), this.getName(), (double)(this.getX() + 8.0F), (double)(this.getY() + this.height / 2.0F - 3.0F), HudEditor.textColor.getValue().getColor()
          );
       context.getMatrices().pop();
    }
@@ -118,7 +121,7 @@ public class ConfigCategory extends AbstractCategory {
          float offsetY = this.getY() + this.height + this.moduleOffset;
 
          for (String cfg : this.configs) {
-            if (Render2DEngine.isHovered((double)mouseX, (double)mouseY, (double)(this.getX() + 2.0F), (double)offsetY, (double)(this.width - 4.0F), 14.0)) {
+            if (Render2DEngine.isHovered((double)mouseX, (double)mouseY, (double)this.getX(), (double)offsetY, (double)this.width, 14.0)) {
                if (button == 0) {
                   Managers.CONFIG.load(cfg);
                } else if (button == 1) {

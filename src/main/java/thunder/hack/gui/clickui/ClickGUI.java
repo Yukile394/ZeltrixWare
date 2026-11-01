@@ -69,18 +69,18 @@ public class ClickGUI extends Screen {
 
    protected void init() {
       if (this.firstOpen) {
-         float xOffset = 20.0F;
+         float xOffset = 10.0F;
 
          for (Module.Category category : Managers.MODULE.getCategories()) {
             if (category != Module.Category.HUD) {
-               Category window = new Category(category, Managers.MODULE.getModulesByCategory(category), xOffset, 20.0F, 110.0F, 20.0F);
+               Category window = new Category(category, Managers.MODULE.getModulesByCategory(category), xOffset, 24.0F, 108.0F, 18.0F);
                window.setOpen(true);
                windows.add(window);
-               xOffset += 115.0F;
+               xOffset += 109.0F;
             }
          }
 
-         ConfigCategory configWindow = new ConfigCategory(xOffset, 20.0F, 110.0F, 20.0F);
+         ConfigCategory configWindow = new ConfigCategory(xOffset, 24.0F, 108.0F, 18.0F);
          configWindow.setOpen(true);
          windows.add(configWindow);
          this.firstOpen = false;
@@ -153,7 +153,7 @@ public class ClickGUI extends Screen {
 
       this.scrollY = 0.0F;
       context.getMatrices().pop();
-      FontRenderers.sf_bold.drawCenteredString(context.getMatrices(), "Zeltrix", 40.0, 10.0, ModuleManager.clickGui.categoryColor.getValue().getColor());
+      FontRenderers.sf_bold.drawString(context.getMatrices(), "Zeltrix", 10.0, 9.0, HudEditor.getColor(270).getRGB());
       int sw = Module.mc.getWindow().getScaledWidth();
       int sh = Module.mc.getWindow().getScaledHeight();
       Color[] colors = new Color[]{

@@ -15,20 +15,20 @@ import thunder.hack.setting.impl.ColorSetting;
 
 public class ClickGui extends Module {
    public final Setting<ClickGui.Gradient> gradientMode = new Setting<>("Gradient", ClickGui.Gradient.LeftToRight);
-   public final Setting<ColorSetting> categoryColor = new Setting<>("BgColor", new ColorSetting(new Color(25, 20, 30, 100).getRGB()));
+   public final Setting<ColorSetting> categoryColor = new Setting<>("BgColor", new ColorSetting(new Color(14, 14, 18, 245).getRGB()));
    public final Setting<ClickGui.TextSide> textSide = new Setting<>("TextSide", ClickGui.TextSide.Left);
-   public final Setting<ClickGui.scrollModeEn> scrollMode = new Setting<>("ScrollMode", ClickGui.scrollModeEn.Old);
-   public final Setting<Integer> catHeight = new Setting<>("CategoryHeight", 300, 100, 720, v -> this.scrollMode.is(ClickGui.scrollModeEn.New));
+   public final Setting<ClickGui.scrollModeEn> scrollMode = new Setting<>("ScrollMode", ClickGui.scrollModeEn.New);
+   public final Setting<Integer> catHeight = new Setting<>("CategoryHeight", 260, 100, 720, v -> this.scrollMode.is(ClickGui.scrollModeEn.New));
    public final Setting<Boolean> descriptions = new Setting<>("Descriptions", true);
    public final Setting<Boolean> blur = new Setting<>("Blur", true);
    public final Setting<Boolean> tips = new Setting<>("Tips", true);
    public final Setting<Boolean> pauseBaritone = new Setting<>("PauseBaritone", false);
    public final Setting<ClickGui.Image> image = new Setting<>("Image", ClickGui.Image.None);
-   public final Setting<Integer> moduleWidth = new Setting<>("ModuleWidth", 100, 50, 200);
-   public final Setting<Integer> moduleHeight = new Setting<>("ModuleHeight", 14, 8, 25);
+   public final Setting<Integer> moduleWidth = new Setting<>("ModuleWidth", 108, 50, 200);
+   public final Setting<Integer> moduleHeight = new Setting<>("ModuleHeight", 13, 8, 25);
    public final Setting<Integer> settingFontScale = new Setting<>("SettingFontScale", 12, 6, 24);
    public final Setting<Integer> modulesFontScale = new Setting<>("ModulesFontScale", 14, 6, 24);
-   public static final Setting<BooleanSettingGroup> gear = new Setting<>("Gear", new BooleanSettingGroup(true));
+   public static final Setting<BooleanSettingGroup> gear = new Setting<>("Gear", new BooleanSettingGroup(false));
    public final Setting<Integer> gearScale = new Setting<>("GearScale", 60, 6, 300).addToGroup(gear);
    public static Setting<Float> gearDuration = new Setting<>("GearDuration", 0.5F, 0.1F, 2.0F).addToGroup(gear);
    public static Setting<Integer> gearStop = new Setting<>("GearStop", 25, 10, 45).addToGroup(gear);

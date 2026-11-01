@@ -18,6 +18,8 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.block.Block;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
+import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
+import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.Registries;
@@ -383,6 +385,75 @@ public final class InventoryUtility {
 
    public static SearchInvResult findBlockInInventory(Block... blocks) {
       return findItemInInventory(Arrays.stream(blocks).<Item>map(Block::asItem).toList());
+   }
+
+
+   public static int getSharpnessLevel(ItemStack stack) {
+      if (stack == null || stack.isEmpty() || Module.mc.world == null) {
+         return 0;
+      }
+
+      return Module.mc.world
+         .getRegistryManager()
+         .get(Enchantments.SHARPNESS.getRegistryRef())
+         .getEntry(Enchantments.SHARPNESS)
+         .map(e -> EnchantmentHelper.getLevel(e, stack))
+         .orElse(0);
+   }
+
+   private static int sharpScore(ItemStack stack) {
+      int lvl = getSharpnessLevel(stack);
+      if (lvl <= 0) {
+         return 0;
+      }
+
+      return lvl * 10 + (stack.getItem() instanceof SwordItem ? 2 : (stack.getItem() instanceof AxeItem ? 1 : 0));
+   }
+
+   /** Inventory index (0-8 hotbar, 9-35 main) of the item with the highest Sharpness, -1 if none. Ties keep the lowest index. */
+   public static int getBestSharpnessIndex(int from, int to) {
+      if (Module.mc.player == null) {
+         return -1;
+      }
+
+      int best = -1;
+      int bestScore = 0;
+      for (int i = from; i < to; i++) {
+         int score = sharpScore(Module.mc.player.getInventory().getStack(i));
+         if (score > bestScore) {
+            bestScore = score;
+            best = i;
+         }
+      }
+
+      return best;
+   }
+
+   public static SearchInvResult getSharpestHotBar() {
+      int i = getBestSharpnessIndex(0, 9);
+      return i == -1 ? SearchInvResult.notFound() : new SearchInvResult(i, true, Module.mc.player.getInventory().getStack(i));
+   }
+
+   /** Finds the highest-Sharpness item anywhere in the inventory, moves it to hotbar slot 1 and selects it. */
+   public static boolean equipBestSharpnessToSlot1() {
+      if (Module.mc.player == null || Module.mc.interactionManager == null || Module.mc.getNetworkHandler() == null) {
+         return false;
+      }
+
+      int idx = getBestSharpnessIndex(0, 36);
+      if (idx == -1) {
+         return false;
+      }
+
+      if (idx != 0) {
+         int syncId = Module.mc.player.playerScreenHandler.syncId;
+         int screenSlot = idx < 9 ? idx + 36 : idx;
+         Module.mc.interactionManager.clickSlot(syncId, screenSlot, 0, SlotActionType.SWAP, Module.mc.player);
+         Module.mc.getNetworkHandler().sendPacket(new CloseHandledScreenC2SPacket(syncId));
+      }
+
+      switchTo(0);
+      return true;
    }
 
    public static void saveSlot() {

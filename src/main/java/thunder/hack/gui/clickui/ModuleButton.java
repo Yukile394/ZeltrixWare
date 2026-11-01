@@ -104,14 +104,12 @@ public class ModuleButton extends AbstractButton {
       }
 
       this.prevHovered = this.hovered;
-      float ix = this.x + 5.0F;
+      float ix = this.x + 4.0F;
       float iy = this.y + this.height / 2.0F - 3.0F;
       this.offsetY = AnimationUtility.fast(this.offsetY, this.target_offset, 20.0F);
       float offsetY = 0.0F;
       if (this.isOpen()) {
-         Render2DEngine.drawGuiBase(
-            context.getMatrices(), this.x + 4.0F, this.y + 2.0F, this.width - 8.0F, this.height + (float)this.getElementsHeight(), 1.0F, 0.0F
-         );
+         Render2DEngine.drawRect(context.getMatrices(), this.x, this.y + this.height, this.width, (float)this.getElementsHeight() + 2.0F, new Color(13, 13, 17, 255));
          Render2DEngine.addWindow(
             context.getMatrices(),
             new Render2DEngine.Rectangle(
@@ -172,17 +170,6 @@ public class ModuleButton extends AbstractButton {
             Render2DEngine.popWindow();
          }
 
-         if (Render2DEngine.isHovered(
-            (double)mouseX,
-            (double)mouseY,
-            (double)(this.x + 4.0F),
-            (double)(this.y + this.height - 12.0F),
-            (double)(this.width - 8.0F),
-            (double)(this.height + (float)this.getElementsHeight())
-         )) {
-            Render2DEngine.drawBlurredShadow(context.getMatrices(), (float)(mouseX - 10), (float)(mouseY - 10), 20.0F, 20.0F, 40, HudEditor.getColor(270));
-         }
-
          for (AbstractElement element : this.elements) {
             if (element.isVisible()) {
                element.setOffsetY(offsetY);
@@ -223,79 +210,32 @@ public class ModuleButton extends AbstractButton {
             }
          });
          context.getMatrices().pop();
-         Render2DEngine.drawBlurredShadow(context.getMatrices(), this.x + 3.0F, this.y + this.height, this.width - 6.0F, 3.0F, 13, HudEditor.getColor(1));
-         if (!this.module.isEnabled()) {
-            Render2DEngine.draw2DGradientRect(
-               context.getMatrices(),
-               this.x + 4.0F,
-               this.y + this.height - 1.0F,
-               this.x + 3.0F + this.width - 7.0F,
-               3.0F + this.y + this.height,
-               Render2DEngine.applyOpacity(HudEditor.getColor(0), 0.0F),
-               HudEditor.getColor(0),
-               Render2DEngine.applyOpacity(HudEditor.getColor(90), 0.0F),
-               HudEditor.getColor(90)
-            );
-         }
-
-         Render2DEngine.popWindow();
-      } else if (this.hovered) {
-         Render2DEngine.addWindow(context.getMatrices(), this.x + 1.0F, this.y, this.x + this.width - 2.0F, this.y + this.height, 1.0);
-         Render2DEngine.drawBlurredShadow(context.getMatrices(), (float)(mouseX - 10), (float)(mouseY - 10), 20.0F, 20.0F, 35, HudEditor.getColor(270));
          Render2DEngine.popWindow();
       }
 
       this.category_animation = AnimationUtility.fast(this.category_animation, offsetY, 20.0F);
-      if ((double)this.animation < 0.05) {
-         Render2DEngine.drawRect(
+      Render2DEngine.drawRect(context.getMatrices(), this.x, this.y, this.width, this.height, new Color(20, 20, 26, 255));
+      if (this.hovered) {
+         Render2DEngine.drawRect(context.getMatrices(), this.x, this.y, this.width, this.height, new Color(255, 255, 255, 14));
+      }
+
+      if ((double)this.animation > 0.02) {
+         Render2DEngine.draw2DGradientRect(
             context.getMatrices(),
-            this.x + 4.0F,
-            this.y + 1.0F,
-            this.width - 8.0F,
-            this.height - 2.0F,
-            Render2DEngine.applyOpacity(HudEditor.plateColor.getValue().getColorObject().darker(), 0.15F)
+            this.x,
+            this.y,
+            this.x + this.width,
+            this.y + this.height,
+            Render2DEngine.applyOpacity(HudEditor.getColor(270), this.animation * 0.85F),
+            Render2DEngine.applyOpacity(HudEditor.getColor(270), this.animation * 0.85F),
+            Render2DEngine.applyOpacity(HudEditor.getColor(0), this.animation * 0.55F),
+            Render2DEngine.applyOpacity(HudEditor.getColor(0), this.animation * 0.55F)
          );
-      } else {
-         switch ((ClickGui.Gradient)ModuleManager.clickGui.gradientMode.getValue()) {
-            case both:
-               Render2DEngine.draw2DGradientRect(
-                  context.getMatrices(),
-                  this.x + 4.0F,
-                  this.y + 1.0F,
-                  this.x + 4.0F + this.width - 8.0F,
-                  this.y + 1.0F + this.height - 2.0F,
-                  Render2DEngine.applyOpacity(HudEditor.getColor(270), this.animation * 2.0F),
-                  Render2DEngine.applyOpacity(HudEditor.getColor(0), this.animation * 2.0F),
-                  Render2DEngine.applyOpacity(HudEditor.getColor(180), this.animation),
-                  Render2DEngine.applyOpacity(HudEditor.getColor(90), this.animation)
-               );
-               break;
-            case UpsideDown:
-               Render2DEngine.draw2DGradientRect(
-                  context.getMatrices(),
-                  this.x + 4.0F,
-                  this.y + 1.0F,
-                  this.x + 4.0F + this.width - 8.0F,
-                  this.y + 1.0F + this.height - 2.0F,
-                  Render2DEngine.applyOpacity(HudEditor.getColor(270), this.animation * 2.0F),
-                  Render2DEngine.applyOpacity(HudEditor.getColor(0), this.animation * 2.0F),
-                  Render2DEngine.applyOpacity(HudEditor.getColor(270), this.animation),
-                  Render2DEngine.applyOpacity(HudEditor.getColor(0), this.animation)
-               );
-               break;
-            case LeftToRight:
-               Render2DEngine.draw2DGradientRect(
-                  context.getMatrices(),
-                  this.x + 4.0F,
-                  this.y + 1.0F,
-                  this.x + 4.0F + this.width - 8.0F,
-                  this.y + 1.0F + this.height - 2.0F,
-                  Render2DEngine.applyOpacity(HudEditor.getColor(270), this.animation * 2.0F),
-                  Render2DEngine.applyOpacity(HudEditor.getColor(270), this.animation * 2.0F),
-                  Render2DEngine.applyOpacity(HudEditor.getColor(0), this.animation),
-                  Render2DEngine.applyOpacity(HudEditor.getColor(0), this.animation)
-               );
-         }
+         Render2DEngine.drawRect(context.getMatrices(), this.x, this.y, 2.0F, this.height, Render2DEngine.applyOpacity(Color.WHITE, this.animation));
+      }
+
+      if (this.isOpen()) {
+         Render2DEngine.drawRect(context.getMatrices(), this.x, this.y + this.height - 0.5F, this.width, 0.5F, new Color(255, 255, 255, 40));
       }
 
       if (!this.module.getBind().getBind().equalsIgnoreCase("none") && !this.binding) {

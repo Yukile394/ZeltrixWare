@@ -401,7 +401,11 @@ public class Aura extends Module {
 
    private int switchMethod() {
       int prevSlot = -1;
-      SearchInvResult swordResult = InventoryUtility.getSwordHotBar();
+      SearchInvResult swordResult = InventoryUtility.getSharpestHotBar();
+      if (!swordResult.found()) {
+         swordResult = InventoryUtility.getSwordHotBar();
+      }
+
       if (swordResult.found() && this.switchMode.getValue() != Aura.Switch.None) {
          if (this.switchMode.getValue() == Aura.Switch.Silent) {
             prevSlot = mc.player.getInventory().selectedSlot;

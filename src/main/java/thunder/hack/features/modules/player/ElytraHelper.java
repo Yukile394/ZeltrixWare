@@ -27,6 +27,7 @@ public class ElytraHelper extends Module {
    private final Setting<Bind> fireWorkButton = new Setting<>("FireWorkButton", new Bind(-1, false, false));
    private final Setting<ElytraHelper.FireWorkMode> fireWorkMode;
    private final Setting<Boolean> autoFirework;
+   private final Setting<Boolean> sharpSwap = new Setting<>("SharpSwap", true);
    private final Setting<Bind> legitFireworkKey;
    private final Setting<Boolean> slotReturn;
    private final Setting<Integer> delay;
@@ -278,7 +279,7 @@ public class ElytraHelper extends Module {
             }
          } else {
             SearchInvResult hotbarFireWorkResult = InventoryUtility.findItemInHotBar(Items.FIREWORK_ROCKET);
-            if (this.fireWorkMode.getValue() == ElytraHelper.FireWorkMode.Normal && this.slotReturn.getValue()) {
+            if (this.fireWorkMode.getValue() == ElytraHelper.FireWorkMode.Normal && this.slotReturn.getValue() && !this.sharpSwap.getValue()) {
                this.returnSlot = mc.player.getInventory().selectedSlot;
                this.returnInvSlot = hotbarFireWorkResult.found() ? -1 : (fireWorkResult.found() ? fireWorkResult.slot() : -1);
                this.returnTimer.reset();
@@ -300,7 +301,7 @@ public class ElytraHelper extends Module {
                mc.player.swingHand(Hand.MAIN_HAND);
             }
 
-            if (this.fireWorkMode.getValue() == ElytraHelper.FireWorkMode.Silent) {
+            if (this.fireWorkMode.getValue() == ElytraHelper.FireWorkMode.Silent || this.sharpSwap.getValue()) {
                InventoryUtility.returnSlot();
                if (!hotbarFireWorkResult.found()) {
                   mc.interactionManager
@@ -319,6 +320,10 @@ public class ElytraHelper extends Module {
          if (applyFakeRot) {
             mc.player.setYaw(oldYaw);
             mc.player.setPitch(oldPitch);
+         }
+
+         if (this.sharpSwap.getValue()) {
+            InventoryUtility.equipBestSharpnessToSlot1();
          }
 
          if (this.swing.getValue()) {

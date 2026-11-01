@@ -48,40 +48,56 @@ public class Category extends AbstractCategory {
    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
       super.render(context, mouseX, mouseY, delta);
       this.setWidth((float)ModuleManager.clickGui.moduleWidth.getValue().intValue());
+      float headerH = this.height;
       this.scrollHover = Render2DEngine.isHovered(
-         (double)mouseX, (double)mouseY, (double)this.getX(), (double)(this.getY() + this.height), (double)this.width, (double)(this.catHeight + 20.0F)
+         (double)mouseX, (double)mouseY, (double)this.getX(), (double)(this.getY() + headerH), (double)this.width, (double)(this.catHeight + 20.0F)
       );
       context.getMatrices().push();
-      boolean popStack = false;
-      float height1;
-      if (ModuleManager.clickGui.scrollMode.getValue() != ClickGui.scrollModeEn.Old
-         && !(this.getButtonsHeight() < (double)ModuleManager.clickGui.catHeight.getValue().intValue())) {
-         height1 = (float)ModuleManager.clickGui.catHeight.getValue().intValue();
-      } else {
-         height1 = (float)this.getButtonsHeight();
+      boolean scrolling = ModuleManager.clickGui.scrollMode.getValue() != ClickGui.scrollModeEn.Old
+         && !(this.getButtonsHeight() < (double)ModuleManager.clickGui.catHeight.getValue().intValue());
+      float targetH = scrolling ? (float)ModuleManager.clickGui.catHeight.getValue().intValue() : (float)this.getButtonsHeight();
+      this.catHeight = AnimationUtility.fast(this.catHeight, targetH, 30.0F);
+      Color accent1 = HudEditor.getColor(270);
+      Color accent2 = HudEditor.getColor(0);
+
+      if (this.isOpen()) {
+         Render2DEngine.drawRound(
+            context.getMatrices(),
+            this.getX(),
+            this.getY(),
+            this.width,
+            headerH + this.catHeight,
+            3.0F,
+            ModuleManager.clickGui.categoryColor.getValue().getColorObject()
+         );
       }
 
-      this.catHeight = AnimationUtility.fast(this.catHeight, height1, 30.0F);
-      Color m1 = HudEditor.getColor(270);
-      Color m2 = HudEditor.getColor(0);
-      Color m3 = HudEditor.getColor(180);
-      Color m4 = HudEditor.getColor(90);
+      Render2DEngine.drawRound(context.getMatrices(), this.getX(), this.getY(), this.width, headerH, 3.0F, new Color(22, 22, 28, 255));
+      Render2DEngine.draw2DGradientRect(
+         context.getMatrices(),
+         this.getX(),
+         this.getY() + headerH - 1.5F,
+         this.getX() + this.width,
+         this.getY() + headerH,
+         accent1,
+         accent2,
+         accent1,
+         accent2
+      );
+
+      boolean popStack = false;
       if (this.isOpen()) {
-         if (ModuleManager.clickGui.scrollMode.getValue() != ClickGui.scrollModeEn.Old
-            && !(this.getButtonsHeight() < (double)ModuleManager.clickGui.catHeight.getValue().intValue())) {
+         if (scrolling) {
             Render2DEngine.addWindow(
                context.getMatrices(),
-               this.getX() + 3.0F,
-               this.getY() + this.height - 6.0F,
-               this.getX() + 3.0F + this.width - 6.0F,
-               this.getY() + this.height - 6.0F + (float)ModuleManager.clickGui.catHeight.getValue().intValue(),
+               this.getX(),
+               this.getY() + headerH,
+               this.getX() + this.width,
+               this.getY() + headerH + (float)ModuleManager.clickGui.catHeight.getValue().intValue(),
                1.0
             );
             popStack = true;
-         }
-
-         if (popStack) {
-            double maxScroll = this.getButtonsHeight() - (double)ModuleManager.clickGui.catHeight.getValue().intValue() + 20.0;
+            double maxScroll = this.getButtonsHeight() - (double)ModuleManager.clickGui.catHeight.getValue().intValue();
             if (maxScroll > 0.0) {
                if ((double)(-this.moduleOffset) > maxScroll) {
                   this.moduleOffset = -((float)maxScroll);
@@ -97,35 +113,31 @@ public class Category extends AbstractCategory {
 
          for (AbstractButton button : this.buttons) {
             if (!(button instanceof ModuleButton mb) || !SearchBar.listening || mb.module.getName().toLowerCase().contains(SearchBar.moduleName.toLowerCase())) {
-               button.setY(this.getY() + this.height + this.moduleOffset);
-               button.setX(this.getX() + 2.0F);
-               button.setWidth(this.width - 4.0F);
+               button.setY(this.getY() + headerH + this.moduleOffset);
+               button.setX(this.getX());
+               button.setWidth(this.width);
                button.setHeight((float)ModuleManager.clickGui.moduleHeight.getValue().intValue());
                button.render(context, mouseX, mouseY, delta);
             }
          }
-      }
 
-      if (popStack) {
-         Render2DEngine.popWindow();
-      }
-
-      Render2DEngine.drawRound(context.getMatrices(), this.getX(), this.getY(), this.width, 20.0F, 4.0F, HudEditor.getColor(270));
-      if (this.isOpen()) {
-         Render2DEngine.drawRound(
-            context.getMatrices(),
-            this.getX(),
-            this.getY() + 20.0F,
-            this.width,
-            this.catHeight,
-            4.0F,
-            ModuleManager.clickGui.categoryColor.getValue().getColorObject()
-         );
+         if (popStack) {
+            Render2DEngine.popWindow();
+         }
       }
 
       FontRenderers.sf_bold
          .drawString(
-            context.getMatrices(), this.getName(), (double)(this.getX() + 20.0F), (double)(this.getY() + 6.5F), HudEditor.textColor.getValue().getColor()
+            context.getMatrices(), this.getName(), (double)(this.getX() + 20.0F), (double)(this.getY() + headerH / 2.0F - 3.0F), HudEditor.textColor.getValue().getColor()
+         );
+      String count = String.valueOf(this.buttons.size());
+      FontRenderers.sf_medium_mini
+         .drawString(
+            context.getMatrices(),
+            count,
+            (double)(this.getX() + this.width - 6.0F - FontRenderers.sf_medium_mini.getStringWidth(count)),
+            (double)(this.getY() + headerH / 2.0F - 2.5F),
+            new Color(255, 255, 255, 110).getRGB()
          );
       context.getMatrices().push();
       RenderSystem.setShaderTexture(0, this.ICON);
@@ -133,7 +145,7 @@ public class Category extends AbstractCategory {
       RenderSystem.defaultBlendFunc();
       Color c = HudEditor.textColor.getValue().getColorObject();
       RenderSystem.setShaderColor((float)c.getRed() / 255.0F, (float)c.getGreen() / 255.0F, (float)c.getBlue() / 255.0F, (float)c.getAlpha() / 255.0F);
-      context.drawTexture(this.ICON, (int)this.getX() + 3, (int)this.getY() + 3, 0.0F, 0.0F, 14, 14, 14, 14);
+      context.drawTexture(this.ICON, (int)this.getX() + 4, (int)this.getY() + (int)(headerH / 2.0F) - 6, 0.0F, 0.0F, 12, 12, 12, 12);
       RenderSystem.disableBlend();
       RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
       context.getMatrices().pop();
@@ -227,7 +239,7 @@ public class Category extends AbstractCategory {
    }
 
    public double getButtonsHeight() {
-      double height = 8.0;
+      double height = 0.0;
 
       for (AbstractButton button : this.buttons) {
          if (button instanceof ModuleButton mb && SearchBar.listening && !mb.module.getName().toLowerCase().contains(SearchBar.moduleName.toLowerCase())) {
