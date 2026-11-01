@@ -50,6 +50,7 @@ public class Rotations extends Module {
          && Aura.target != null
          && ModuleManager.aura.rotationMode.not(Aura.Mode.None)
          && ModuleManager.aura.elytraTarget.getValue()
+         && !Float.isNaN(this.fixRotation)
          && Managers.PLAYER.ticksElytraFlying > 5) {
          if (e.isPre()) {
             this.travelPrevYaw = mc.player.getYaw();
