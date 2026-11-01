@@ -44,7 +44,6 @@ public class ElytraHelper extends Module {
    private int returnSlot;
    private int returnInvSlot;
    public static boolean swapping = false;
-   public static boolean sharpHeld = false;
    public static boolean hasUsedFirework = false;
    public static long lastElytraAttackTime = 0L;
    private int bypassDelayOffset = 0;
@@ -184,10 +183,6 @@ public class ElytraHelper extends Module {
    }
 
    public void useFireWork() {
-      if (sharpHeld || InventoryUtility.getSharpnessLevel(mc.player.getMainHandStack()) > 0) {
-         return;
-      }
-
       hasUsedFirework = true;
       SearchInvResult fireWorkResult = InventoryUtility.findItemInInventory(Items.FIREWORK_ROCKET);
       if (!fireWorkResult.found()) {
